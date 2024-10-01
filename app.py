@@ -19,3 +19,5 @@ def handle_sensor_data(data):
     socketio.emit('server_response', {'message': 'Data received successfully'})
 
 # Remove the run block
+if __name__ == '__main__':
+    socketio.run(app, debug=True, host="0.0.0.0", port=int(os.getenv('PORT', 5000)))
