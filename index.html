@@ -30,18 +30,35 @@
         dot.className = 'dot';
         document.getElementById('map').appendChild(dot);
 
-        // Function to update the position of the blue dot
-        function updatePosition(data) {
-            const x = data.x; // X coordinate from sensor data
-            const y = data.y; // Y coordinate from sensor data
-            dot.style.left = `${x}px`;
-            dot.style.top = `${y}px`;
+        let currentX = 0; // Current x position of the dot
+        let currentY = 0; // Current y position of the dot
+
+        // Function to smoothly move the dot to the new position
+        function moveTo(targetX, targetY) {
+            const step = 1; // Adjust this for speed (higher values move faster)
+            const dx = targetX - currentX;
+            const dy = targetY - currentY;
+
+            if (Math.abs(dx) < step && Math.abs(dy) < step) {
+                // If the dot is close enough to the target, set its position
+                currentX = targetX;
+                currentY = targetY;
+                dot.style.left = `${currentX}px`;
+                dot.style.top = `${currentY}px`;
+            } else {
+                // Move towards the target position
+                currentX += dx / Math.max(Math.abs(dx), Math.abs(dy)) * step;
+                currentY += dy / Math.max(Math.abs(dx), Math.abs(dy)) * step;
+                dot.style.left = `${currentX}px`;
+                dot.style.top = `${currentY}px`;
+                requestAnimationFrame(() => moveTo(targetX, targetY)); // Continue moving
+            }
         }
 
         // Receive sensor data from the server
         socket.on('sensor_data', (data) => {
             console.log("Received sensor data:", data);
-            updatePosition(data);
+            moveTo(data.x, data.y); // Move the dot to the new position
         });
     </script>
 </body>
