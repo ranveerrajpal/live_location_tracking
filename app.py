@@ -36,4 +36,4 @@ def handle_sensor_data(data):
     emit('server_response', {'message': 'Data received and logged!'})  # Acknowledge the client
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host="0.0.0.0", port=os.getenv('PORT', 5000))
